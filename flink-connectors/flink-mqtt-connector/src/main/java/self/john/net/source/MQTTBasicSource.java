@@ -6,14 +6,17 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
-
+import static self.john.net.common.C.checkProperty;
 import static self.john.net.Configuration.*;
 
+/**
+ * @author zhangyong
+ */
 public class MQTTBasicSource extends RichSourceFunction<String> {
 
 
     private final Properties properties;
-    // ------ Runtime fields
+    //Runtime fields
     private transient MqttClient client;
     //控制while循环标志
     private transient volatile boolean running;
@@ -76,9 +79,4 @@ public class MQTTBasicSource extends RichSourceFunction<String> {
 
     }
 
-    private static void checkProperty(Properties p, String key) {
-        if (!p.containsKey(key)) {
-            throw new IllegalArgumentException("Required property '" + key + "' not set.");
-        }
-    }
 }
