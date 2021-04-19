@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="flink-archetype_11.2" />
         <module name="flink-mqtt-connector" />
+        <module name="flink-connector-common" />
       </profile>
     </annotationProcessing>
   </component>

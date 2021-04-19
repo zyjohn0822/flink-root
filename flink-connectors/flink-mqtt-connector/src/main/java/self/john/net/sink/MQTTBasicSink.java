@@ -4,6 +4,7 @@ import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 
@@ -15,7 +16,7 @@ import static self.john.net.common.C.checkProperty;
 /**
  * @author zy
  */
-public class MQTTBasicSink extends RichSinkFunction<String> {
+public class MQTTBasicSink extends AbstractMQTTBasicSInk<String> {
     private Properties properties;
     private transient MqttClient mqttClient;
 
@@ -26,11 +27,8 @@ public class MQTTBasicSink extends RichSinkFunction<String> {
 
         this.properties = properties;
     }
-
     @Override
-    public void open(Configuration parameters) throws Exception {
-        super.open(parameters);
-        //获取mqtt客户端
+    public void open() throws MqttException {
         mqttClient = new MqttClient(
                 properties.getProperty(URL),
                 properties.getProperty(CLIENT_ID),
@@ -46,12 +44,12 @@ public class MQTTBasicSink extends RichSinkFunction<String> {
     }
 
     @Override
-    public void close() throws Exception {
-        super.close();
+    public void execute(String value) throws MqttException {
+        mqttClient.publish(properties.getProperty(TOPIC), value.getBytes(), 0, false);
     }
 
     @Override
-    public void invoke(String value, Context context) throws Exception {
-        mqttClient.publish(properties.getProperty(TOPIC), value.getBytes(), 0, false);
+    public void cancel() throws MqttException {
+        mqttClient.disconnect();
     }
 }
